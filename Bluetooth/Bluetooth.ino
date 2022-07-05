@@ -1,6 +1,6 @@
 #include <ArduinoBLE.h>
 BLEService batteryService("1101");
-BLEUnsignedCharCharacteristic batteryLevelChar("2101", BLERead | BLENotify| BLEWrite);
+BLEWordCharacteristic batteryLevelChar("2101", BLERead | BLENotify| BLEWrite);
 void setup() {
 Serial.begin(9600);
 while (!Serial);
@@ -35,12 +35,12 @@ while (central.connected()) {
         
       
       int battery = analogRead(A0);
-      int batteryLevel = map(battery, 0, 1023, 0, 100);
-      Serial.print("Battery Level % is now: ");
-      Serial.println(batteryLevel);
-      batteryLevelChar.writeValue(batteryLevel);
-      Serial.print(batteryService);
-      delay(200);
+//      int batteryLevel = map(battery, 0, 1023, 0, 100);
+//      Serial.print("Battery Level % is now: ");
+//      Serial.println(batteryLevel);
+//      batteryLevelChar.writeValue(batteryLevel);
+        Serial.println(batteryLevelChar.value());
+     
 
 }
 }
