@@ -89,6 +89,9 @@ void loop() {
       if (client.available()) {             // if there's bytes to read from the client,
         String s = client.readStringUntil('\r');             // read a byte, then
         Serial.println(s);                    // print it out the serial monitor
+        if(s == "disconnect"){
+          
+        }
       }
     }
     // close the connection:
