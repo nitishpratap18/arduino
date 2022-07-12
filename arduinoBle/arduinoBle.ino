@@ -1,4 +1,3 @@
-
 #include <ArduinoBLE.h>
 #include <SPI.h>
 #include <WiFiNINA.h>
@@ -127,7 +126,7 @@ void connectToWifi(String wifiNamePassword ) {
     delay(10000);
    
   }
-  BLE.begin();
+  
   server.begin();                           // start the web server on port 80
   printWifiStatus();                        // you're connected now, so print out the status
 }

@@ -12,7 +12,6 @@
 
 BluetoothSerial SerialBT;
 String s = "";
-bool isWifiConnected = false;
 #include <WiFi.h>
 WiFiServer server(80);
 void setup() {
@@ -88,7 +87,6 @@ void connectToWifi() {
 void startServer() {
   server.begin();
 }
-
 void wificlient() {
   WiFiClient client = server.available();
 
