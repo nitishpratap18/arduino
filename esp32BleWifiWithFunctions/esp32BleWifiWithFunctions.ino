@@ -1,6 +1,6 @@
 /*
    This is code for write to arduino through ble as well as wifi.
-   
+
 */
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -9,25 +9,31 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <WiFi.h>
- WiFiServer server(80);
+#include <BLE2902.h>
+
+WiFiServer server(80);
+int status = WL_IDLE_STATUS;
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
- char ssid[] = "iTinker";
-  char password[] = "Pass1234a";
+
+
+
+String wifiCredentials = "";
+int indexOfPartition;
 class MyCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
-      
+
       std::string value = pCharacteristic->getValue();
-      
+
       if (value.length() > 0) {
-       
+
         Serial.print("New value: ");
-        for (int i = 0; i < value.length(); i++){
-          Serial.print(value[i]);
-         
+        wifiCredentials = "";
+        for (int i = 0; i < value.length(); i++) {
+          wifiCredentials  = wifiCredentials+value[i];
         }
-        Serial.println();
-       
+        Serial.println(wifiCredentials);
+
       }
     }
 };
@@ -35,31 +41,41 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200);
   startBle();
+  while(wifiCredentials.length()<10){
+    Serial.println(wifiCredentials.length());
+    //just wait do nothing
+    if(wifiCredentials.length()>=10){
+      Serial.println(wifiCredentials.length());
+      break;
+    }
+  }
+  Serial.println("i am here now");
   startWifi();
   server.begin();
 }
 
 void loop() {
 
-  // put your main code here, to run repeatedly:
-   WiFiClient client = server.available();
+//  // put your main code here, to run repeatedly:
+//  WiFiClient client = server.available();
+//
+//  if (client) {                             // if you get a client,
+//    Serial.println("New Client.");           // print a message out the serial port
+//    String currentLine = "";                // make a String to hold incoming data from the client
+//    while (client.connected()) {            // loop while the client's connected
+//      if (client.available()) {             // if there's bytes to read from the client,
+//        String s = client.readStringUntil('\r');             // read a byte, then
+//        Serial.println(s);                    // print it out the serial monitor
+//      }
+//    }
+//  }
+//  // close the connection:
+//  client.stop();
+//  //  Serial.println("Client Disconnected.");
 
-  if (client) {                             // if you get a client,
-    Serial.println("New Client.");           // print a message out the serial port
-    String currentLine = "";                // make a String to hold incoming data from the client
-    while (client.connected()) {            // loop while the client's connected
-      if (client.available()) {             // if there's bytes to read from the client,
-        String s = client.readStringUntil('\r');             // read a byte, then
-        Serial.println(s);                    // print it out the serial monitor
-      }
-    }
-  }
-  // close the connection:
-  client.stop();
-  //  Serial.println("Client Disconnected.");
 }
-void startBle(){
-   
+void startBle() {
+
   BLEDevice::init("MyESP32");
   BLEServer *pServer = BLEDevice::createServer();
 
@@ -78,10 +94,41 @@ void startBle(){
 
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
   pAdvertising->start();
+  Serial.println("Bluetooth is started connect now");
 }
-void startWifi(){
-  WiFi.begin(ssid,password);
+void startWifi() {
+  
+  Serial.println(wifiCredentials);
+   String wifiName = "";
+  String password = "";
+  int indexOfPartition = wifiCredentials.indexOf(" ");
+  wifiName = wifiCredentials.substring(0, indexOfPartition);
+  password = wifiCredentials.substring(indexOfPartition + 1);
+  Serial.println(password);
+  char wifi[wifiName.length() + 1];
+  char pass[password.length() + 1];
+  for (int i = 0; i < wifiName.length(); i++) {
+    wifi[i] = wifiName.charAt(i);
+  }
+  wifi[wifiName.length()] = '\0';
+  pass[password.length()] = '\0';
+  for (int i = 0; i < password.length(); i++) {
+    pass[i] = password.charAt(i);
+  }
+  Serial.print("wifiName is :");
+  Serial.println(wifi);
+  Serial.print("Password is :");
+  Serial.println(pass);
+  
+  
+  // attempt to connect to WiFi network:
+  
+
   while (WiFi.status() != WL_CONNECTED) {
+//    Serial.print(wifi);
+//    Serial.print(pass);
+    
+    WiFi.begin(wifi, pass);
     delay(500);
     Serial.print(".");
   }

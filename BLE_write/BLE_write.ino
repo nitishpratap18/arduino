@@ -1,7 +1,6 @@
 /*
     Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleWrite.cpp
     Ported to Arduino ESP32 by Evandro Copercini
-    THis is code of write through bluetooth
 */
 
 #include <BLEDevice.h>
@@ -13,6 +12,8 @@
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+bool deviceConnected;
+
 
 
 class MyCallbacks: public BLECharacteristicCallbacks {
@@ -34,6 +35,11 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200);
 
+  Serial.println("1- Download and install an BLE scanner app in your phone");
+  Serial.println("2- Scan for BLE devices in the app");
+  Serial.println("3- Connect to MyESP32");
+  Serial.println("4- Go to CUSTOM CHARACTERISTIC in CUSTOM SERVICE and write something");
+  Serial.println("5- See the magic =)");
 
   BLEDevice::init("MyESP32");
   BLEServer *pServer = BLEDevice::createServer();
@@ -47,6 +53,7 @@ void setup() {
                                        );
 
   pCharacteristic->setCallbacks(new MyCallbacks());
+ 
 
   pCharacteristic->setValue("Hello World");
   pService->start();
@@ -57,5 +64,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  
   delay(2000);
 }
