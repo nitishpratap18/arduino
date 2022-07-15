@@ -32,8 +32,9 @@ class MyCallbacks: public BLECharacteristicCallbacks {
         for (int i = 0; i < value.length(); i++) {
           wifiCredentials  = wifiCredentials+value[i];
         }
+        Serial.print("hello : ");
         Serial.println(wifiCredentials);
-
+        
       }
     }
 };
@@ -41,37 +42,37 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200);
   startBle();
-  while(wifiCredentials.length()<10){
+  while(wifiCredentials.length()<11){
     Serial.println(wifiCredentials.length());
     //just wait do nothing
-    if(wifiCredentials.length()>=10){
+    if(wifiCredentials.length()>=11){
       Serial.println(wifiCredentials.length());
       break;
     }
   }
-  Serial.println("i am here now");
+
   startWifi();
   server.begin();
 }
 
 void loop() {
 
-//  // put your main code here, to run repeatedly:
-//  WiFiClient client = server.available();
-//
-//  if (client) {                             // if you get a client,
-//    Serial.println("New Client.");           // print a message out the serial port
-//    String currentLine = "";                // make a String to hold incoming data from the client
-//    while (client.connected()) {            // loop while the client's connected
-//      if (client.available()) {             // if there's bytes to read from the client,
-//        String s = client.readStringUntil('\r');             // read a byte, then
-//        Serial.println(s);                    // print it out the serial monitor
-//      }
-//    }
-//  }
-//  // close the connection:
-//  client.stop();
-//  //  Serial.println("Client Disconnected.");
+  // put your main code here, to run repeatedly:
+  WiFiClient client = server.available();
+
+  if (client) {                             // if you get a client,
+    Serial.println("New Client.");           // print a message out the serial port
+    String currentLine = "";                // make a String to hold incoming data from the client
+    while (client.connected()) {            // loop while the client's connected
+      if (client.available()) {             // if there's bytes to read from the client,
+        String s = client.readStringUntil('\r');             // read a byte, then
+        Serial.println(s);                    // print it out the serial monitor
+      }
+    }
+  }
+  // close the connection:
+  client.stop();
+//    Serial.println("Client Disconnected.");
 
 }
 void startBle() {
@@ -97,7 +98,7 @@ void startBle() {
   Serial.println("Bluetooth is started connect now");
 }
 void startWifi() {
-  
+  Serial.print("I am in startwifi :");
   Serial.println(wifiCredentials);
    String wifiName = "";
   String password = "";
@@ -125,9 +126,10 @@ void startWifi() {
   
 
   while (WiFi.status() != WL_CONNECTED) {
-//    Serial.print(wifi);
-//    Serial.print(pass);
+    Serial.print(wifi);
+    Serial.print(pass);
     
+    Serial.println("Trying to connect to wifi");
     WiFi.begin(wifi, pass);
     delay(500);
     Serial.print(".");
